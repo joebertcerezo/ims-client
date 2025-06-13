@@ -18,15 +18,7 @@
                 />
               </div>
               <div class="grid gap-3">
-                <div class="flex items-center">
-                  <Label for="password">Password</Label>
-                  <a
-                    href="#"
-                    class="ml-auto text-sm underline-offset-4 hover:underline"
-                  >
-                    Forgot your password?
-                  </a>
-                </div>
+                <Label for="password">Password</Label>
                 <Input id="password" type="password" required />
               </div>
               <Button type="submit" class="w-full"> Login </Button>

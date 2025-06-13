@@ -5,13 +5,14 @@
         <CardTitle class="text-xl"> Login into your account </CardTitle>
       </CardHeader>
       <CardContent>
-        <form>
+        <form @submit.prevent="handleSubmit(userForm)">
           <div class="grid gap-6">
             <div class="grid gap-6">
               <div class="grid gap-3">
                 <Label for="email">Email</Label>
                 <Input
                   id="email"
+                  v-model="userForm.email"
                   type="email"
                   placeholder="m@example.com"
                   required
@@ -19,7 +20,12 @@
               </div>
               <div class="grid gap-3">
                 <Label for="password">Password</Label>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  v-model="userForm.password"
+                  type="password"
+                  required
+                />
               </div>
               <Button type="submit" class="w-full"> Login </Button>
             </div>
@@ -55,10 +61,32 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { UserLoginSchema, UserSchema } from "~/schema/user.schema";
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
 }>();
 
+const config = useRuntimeConfig();
+const API_URL = config.public.apiUrl;
 
+const userForm = ref<UserLogin>({
+  email: "",
+  password: "",
+});
+
+const handleSubmit = async (form: UserCreate) => {
+  const payload = UserLoginSchema.parse(form);
+  const { data, error } = await useFetch(`${API_URL}/api/session`, {
+    method: "POST",
+    body: payload,
+  });
+  if (!error.value) {
+    const response = UserSchema.parse(data.value);
+    await navigateTo({ path: "/dashboard" });
+    window.alert("Login Successfully, Redirecting to dashboard...");
+  } else {
+    window.alert("Login Failed");
+  }
+};
 </script>

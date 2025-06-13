@@ -84,6 +84,8 @@ const handleSubmit = async (form: UserCreate) => {
   if (!error.value) {
     const response = UserSchema.parse(data.value);
     window.alert("User Created Successfully");
+  } else {
+    window.alert("User Creation Failed");
   }
 };
 </script>

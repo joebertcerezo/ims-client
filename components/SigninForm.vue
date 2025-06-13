@@ -2,7 +2,7 @@
   <div :class="cn('flex flex-col gap-6', props.class)">
     <Card>
       <CardHeader class="text-center">
-        <CardTitle class="text-xl"> Welcome back </CardTitle>
+        <CardTitle class="text-xl"> Login into your account </CardTitle>
       </CardHeader>
       <CardContent>
         <form>
@@ -59,4 +59,6 @@ import { Label } from "@/components/ui/label";
 const props = defineProps<{
   class?: HTMLAttributes["class"];
 }>();
+
+
 </script>

@@ -5,13 +5,14 @@
         <CardTitle class="text-xl"> Create Account </CardTitle>
       </CardHeader>
       <CardContent>
-        <form>
+        <form @submit.prevent="handleSubmit(userForm)">
           <div class="grid gap-6">
             <div class="grid gap-6">
               <div class="grid gap-3">
                 <Label for="email">Email</Label>
                 <Input
                   id="email"
+                  v-model="userForm.email"
                   type="email"
                   placeholder="m@example.com"
                   required
@@ -19,9 +20,14 @@
               </div>
               <div class="grid gap-3">
                 <Label for="password">Password</Label>
-                <Input id="password" type="password" required />
+                <Input
+                  id="password"
+                  v-model="userForm.password"
+                  type="password"
+                  required
+                />
               </div>
-              <Button type="submit" class="w-full"> Login </Button>
+              <Button type="submit" class="w-full"> Signup </Button>
             </div>
             <div class="text-center text-sm">
               Already have an account?
@@ -55,8 +61,29 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { UserCreateSchema, UserSchema } from "~/schema/user.schema";
+
+const config = useRuntimeConfig();
+const API_URL = config.public.apiUrl;
+
+const userForm = ref<UserCreate>({
+  email: "",
+  password: "",
+});
 
 const props = defineProps<{
   class?: HTMLAttributes["class"];
 }>();
+
+const handleSubmit = async (form: UserCreate) => {
+  const payload = UserCreateSchema.parse(form);
+  const { data, error } = await useFetch(`${API_URL}/api/users`, {
+    method: "POST",
+    body: payload,
+  });
+  if (!error.value) {
+    const response = UserSchema.parse(data.value);
+    window.alert("User Created Successfully");
+  }
+};
 </script>

@@ -11,10 +11,6 @@
   </div>
 </template>
 
-<script lang="ts">
-export const description = "A login page with a muted background color.";
-</script>
-
 <script setup lang="ts">
 import SignupForm from "~/components/SignupForm.vue";
 </script>

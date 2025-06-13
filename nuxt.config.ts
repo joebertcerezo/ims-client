@@ -23,5 +23,11 @@ export default defineNuxtConfig({
      * @default "./components/ui"
      */
     componentDir: './components/ui'
+  },
+
+  runtimeConfig: {
+    public: {
+      apiUrl: process.env.VITE_API_URL
+    }
   }
 })

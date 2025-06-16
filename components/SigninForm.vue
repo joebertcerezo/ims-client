@@ -76,17 +76,21 @@ const userForm = ref<UserLogin>({
 });
 
 const handleSubmit = async (form: UserCreate) => {
-  const payload = UserLoginSchema.parse(form);
-  const { data, error } = await useFetch(`${API_URL}/api/session`, {
-    method: "POST",
-    body: payload,
-  });
-  if (!error.value) {
-    const response = UserSchema.parse(data.value);
-    await navigateTo({ path: "/dashboard" });
-    window.alert("Login Successfully, Redirecting to dashboard...");
-  } else {
-    window.alert("Login Failed");
+  try {
+    const payload = UserLoginSchema.parse(form);
+    const { data, error } = await useFetch(`${API_URL}/api/sessions`, {
+      method: "POST",
+      body: payload,
+    });
+    if (!error.value) {
+      const response = UserSchema.parse(data.value);
+      await navigateTo({ path: "/dashboard" });
+      window.alert("Login Successfully, Redirecting to dashboard...");
+    } else {
+      window.alert("Login Failed");
+    }
+  } catch (err) {
+    window.alert("An error occurred.");
   }
 };
 </script>

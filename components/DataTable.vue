@@ -1,9 +1,70 @@
 <template>
-  <section class="border-2">
+  <section class="border-2 p-2">
+    <Dialog v-model:open="isDialogOpen">
+      <DialogTrigger
+        class="flex items-center justify-center text-sm gap-1 p-2 rounded float-right hover:cursor-pointer hover:bg-slate-100"
+        @click="isDialogOpen = true"
+      >
+        <CirclePlus class="h-4 w-4" />
+        Add Product
+      </DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Add Product</DialogTitle>
+          <DialogDescription>
+            Input product to the inventory. Click save when you're done.
+          </DialogDescription>
+        </DialogHeader>
+        <form @submit.prevent="handleAddProduct">
+          <div class="grid gap-4 py-4">
+            <div class="grid gap-2">
+              <Label for="productName">Product Name</Label>
+              <Input
+                id="productName"
+                v-model="productForm.productName"
+                type="text"
+                placeholder="Enter product name"
+                required
+              />
+            </div>
+
+            <div class="grid gap-2">
+              <Label for="quantity">Quantity</Label>
+              <Input
+                id="quantity"
+                v-model.number="productForm.quantity"
+                type="number"
+                placeholder="Enter quantity"
+                min="0"
+                required
+              />
+            </div>
+
+            <div class="grid gap-2">
+              <Label for="category">Category</Label>
+              <Input
+                id="category"
+                v-model="productForm.category"
+                type="text"
+                placeholder="Enter category"
+                required
+              />
+            </div>
+          </div>
+
+          <DialogFooter>
+            <Button type="submit" :disabled="isSubmitting">
+              {{ isSubmitting ? "Saving..." : "Save Product" }}
+            </Button>
+          </DialogFooter>
+        </form>
+      </DialogContent>
+    </Dialog>
+
     <Table>
       <TableHeader>
         <TableRow>
-          <TableHead class="w-[100px]">ID</TableHead>
+          <!-- <TableHead class="w-[100px]">ID</TableHead> -->
           <TableHead>Product Name</TableHead>
           <TableHead>Quantity</TableHead>
           <TableHead>Category</TableHead>
@@ -13,19 +74,33 @@
       </TableHeader>
       <TableBody v-if="productsData">
         <TableRow v-for="product in productsData?.data" :key="product.id">
-          <TableCell class="font-medium"
+          <!-- <TableCell class="font-medium"
             >{{ product.id.slice(0, 8) }}...</TableCell
-          >
+          > -->
           <TableCell>{{ product.productName }}</TableCell>
           <TableCell>{{ product.quantity }}</TableCell>
           <TableCell>{{ product.category.name }}</TableCell>
           <TableCell>{{ formatDate(product.createdAt) }}</TableCell>
           <TableCell class="text-right">
             <div class="flex justify-end gap-2">
-              <Button variant="ghost" size="sm" @click="editItem(product.id)">
-                <Edit class="h-4 w-4" />
-              </Button>
-              <Button variant="ghost" size="sm" @click="deleteItem(product.id)">
+              <EditProductForm
+                :product-id="product.id"
+                :product-name="product.productName"
+                :quantity="product.quantity"
+                :category="product.category.name"
+                @product-updated="productsDataGet"
+              >
+                <Button class="hover:cursor-pointer" variant="ghost" size="sm">
+                  <Edit class="h-4 w-4" />
+                </Button>
+              </EditProductForm>
+
+              <Button
+                class="hover:cursor-pointer"
+                variant="ghost"
+                size="sm"
+                @click="deleteItem(product.id, product.productName)"
+              >
                 <Trash2 class="h-4 w-4 text-destructive" />
               </Button>
             </div>
@@ -47,14 +122,27 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  Dialog,
+  DialogContent,
+  DialogFooter,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Edit, Trash2 } from "lucide-vue-next";
+import { Edit, Trash2, CirclePlus } from "lucide-vue-next";
 import { ProductListSchema } from "~/schema/product.schema";
 
 const config = useRuntimeConfig();
 const API_URL = config.public.apiUrl;
 
 const productsData = ref<ProductListResponse>();
+const productForm = ref({
+  productName: "",
+  quantity: 0,
+  category: "",
+});
+const isSubmitting = ref(false);
+const isDialogOpen = ref(false);
 
 const productsDataGet = async () => {
   try {
@@ -70,37 +158,6 @@ const productsDataGet = async () => {
   }
 };
 
-const productsData1 = {
-  code: "PRODUCT_RETRIEVED",
-  status: "OK",
-  data: [
-    {
-      productName: "Hotdog",
-      quantity: 2,
-      id: "c0c51c5f-f3b0-4091-b9d9-071101a63ec4",
-      category: {
-        name: "Laundry",
-        id: "1bbffb89-2391-49c7-b40a-f4520ca9498d",
-        products: [],
-        createdAt: "2025-06-16T09:11:09.1237",
-      },
-      createdAt: "2025-06-16T09:37:18.034174",
-    },
-    {
-      productName: "Hotdog1",
-      quantity: 2,
-      id: "3a94893b-e02c-4d42-9ab5-2c11ba3a58d5",
-      category: {
-        name: "Laundry",
-        id: "1bbffb89-2391-49c7-b40a-f4520ca9498d",
-        products: [],
-        createdAt: "2025-06-16T09:11:09.1237",
-      },
-      createdAt: "2025-06-16T09:37:35.992048",
-    },
-  ],
-};
-
 const formatDate = (dateString: string) => {
   return new Date(dateString).toLocaleDateString();
 };
@@ -109,8 +166,8 @@ const editItem = (id: string) => {
   console.log("Edit item:", id);
 };
 
-const deleteItem = async (id: string) => {
-  if (confirm(`Are you sure you want to delete item ${id}?`)) {
+const deleteItem = async (id: string, productName: string) => {
+  if (confirm(`Are you sure you want to delete item ${productName}?`)) {
     try {
       const { data, error } = await useFetch(`${API_URL}/api/products`, {
         method: "DELETE",
@@ -127,6 +184,41 @@ const deleteItem = async (id: string) => {
     } catch (err) {
       window.alert("An error occurred.");
     }
+  }
+};
+
+const handleAddProduct = async () => {
+  try {
+    isSubmitting.value = true;
+
+    const payload = {
+      productName: productForm.value.productName,
+      quantity: productForm.value.quantity,
+      category: productForm.value.category,
+    };
+
+    const { data, error } = await useFetch(`${API_URL}/api/products`, {
+      method: "POST",
+      body: payload,
+    });
+
+    if (!error.value) {
+      window.alert("Product added successfully");
+
+      productForm.value = {
+        productName: "",
+        quantity: 0,
+        category: "",
+      };
+
+      isDialogOpen.value = false;
+
+      await productsDataGet();
+    }
+  } catch (err) {
+    window.alert("An error occurred.");
+  } finally {
+    isSubmitting.value = false;
   }
 };
 

@@ -69,6 +69,10 @@ import { ProductListSchema } from "~/schema/product.schema";
 const config = useRuntimeConfig();
 const API_URL = config.public.apiUrl;
 
+const emit = defineEmits<{
+  productsLoaded: [data: ProductListResponse];
+}>();
+
 const productsData = ref<ProductListResponse>();
 
 const productsDataGet = async () => {
@@ -79,6 +83,8 @@ const productsDataGet = async () => {
     if (!error.value) {
       const response = ProductListSchema.parse(data.value);
       productsData.value = response;
+
+      emit("productsLoaded", response);
     }
   } catch (err) {
     window.alert("An error occurred.");

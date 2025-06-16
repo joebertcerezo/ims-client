@@ -76,16 +76,20 @@ const props = defineProps<{
 }>();
 
 const handleSubmit = async (form: UserCreate) => {
-  const payload = UserCreateSchema.parse(form);
-  const { data, error } = await useFetch(`${API_URL}/api/users`, {
-    method: "POST",
-    body: payload,
-  });
-  if (!error.value) {
-    const response = UserSchema.parse(data.value);
-    window.alert("User Created Successfully");
-  } else {
-    window.alert("User Creation Failed");
+  try {
+    const payload = UserCreateSchema.parse(form);
+    const { data, error } = await useFetch(`${API_URL}/api/users`, {
+      method: "POST",
+      body: payload,
+    });
+    if (!error.value) {
+      const response = UserSchema.parse(data.value);
+      window.alert("User Created Successfully");
+    } else {
+      window.alert("User Creation Failed");
+    }
+  } catch (err) {
+    window.alert("An error occurred.");
   }
 };
 </script>

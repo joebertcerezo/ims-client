@@ -42,13 +42,20 @@
 
             <div class="grid gap-2">
               <Label for="category">Category</Label>
-              <Input
-                id="category"
-                v-model="productForm.category"
-                type="text"
-                placeholder="Enter category"
-                required
-              />
+              <Select v-model="productForm.category" required>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a category" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem
+                    v-for="category in categories"
+                    :key="category"
+                    :value="category"
+                  >
+                    {{ category }}
+                  </SelectItem>
+                </SelectContent>
+              </Select>
             </div>
           </div>
 
@@ -64,7 +71,6 @@
     <Table>
       <TableHeader>
         <TableRow>
-          <!-- <TableHead class="w-[100px]">ID</TableHead> -->
           <TableHead>Product Name</TableHead>
           <TableHead>Quantity</TableHead>
           <TableHead>Category</TableHead>
@@ -74,9 +80,6 @@
       </TableHeader>
       <TableBody v-if="productsData">
         <TableRow v-for="product in productsData?.data" :key="product.id">
-          <!-- <TableCell class="font-medium"
-            >{{ product.id.slice(0, 8) }}...</TableCell
-          > -->
           <TableCell>{{ product.productName }}</TableCell>
           <TableCell>{{ product.quantity }}</TableCell>
           <TableCell>{{ product.category.name }}</TableCell>
@@ -128,6 +131,13 @@ import {
   DialogFooter,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2, CirclePlus } from "lucide-vue-next";
 import { ProductListSchema } from "~/schema/product.schema";
@@ -143,6 +153,17 @@ const productForm = ref({
 });
 const isSubmitting = ref(false);
 const isDialogOpen = ref(false);
+
+const categories = [
+  "Groceries",
+  "Body Essentials",
+  "Baby & Child Essentials",
+  "Personal Care",
+  "Kitchen Essentials",
+  "Cleaning Supplies",
+  "Laundry",
+  "Bathroom Supplies",
+];
 
 const productsDataGet = async () => {
   try {

@@ -1,11 +1,11 @@
 import { z } from 'zod';
+import { ApiResponseSchema } from './apiResponse.schema';
 
-export const UserSchema = z.object({
-  id: z.string().uuid('Invalid user ID format'),
+export const UserSchema = ApiResponseSchema(z.object({
   email: z.string().email('Invalid email address'),
   role: z.enum(['staff', 'admin']),
-  createdAt: z.string()
-})
+  createdAt: z.string().nullish()
+}))
 
 export const UserCreateSchema = z.object({
   email: z.string().email('Invalid email address'),

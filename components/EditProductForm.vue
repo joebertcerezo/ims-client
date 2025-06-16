@@ -38,13 +38,20 @@
 
           <div class="grid gap-2">
             <Label for="category">Category</Label>
-            <Input
-              id="category"
-              v-model="editForm.category"
-              type="text"
-              placeholder="Enter category"
-              required
-            />
+            <Select v-model="editForm.category" required>
+              <SelectTrigger>
+                <SelectValue placeholder="Select a category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem 
+                  v-for="category in categories" 
+                  :key="category" 
+                  :value="category"
+                >
+                  {{ category }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
@@ -68,6 +75,13 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -97,6 +111,17 @@ const editForm = ref({
   quantity: 0,
   category: "",
 });
+
+const categories = [
+  'Groceries',
+  'Body Essentials',
+  'Baby & Child Essentials',
+  'Personal Care',
+  'Kitchen Essentials',
+  'Cleaning Supplies',
+  'Laundry',
+  'Bathroom Supplies'
+];
 
 watch(
   () => props,

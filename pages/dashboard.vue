@@ -14,12 +14,12 @@
           </div>
           <div class="flex items-center gap-4">
             <Button variant="outline" size="sm">
-              <User class="h-4 w-4 mr-2" />
-              Profile
+              <User class="h-4 w-4 sm:mr-2" />
+              <span class="hidden sm:block">Profile</span> 
             </Button>
             <Button variant="ghost" size="sm">
-              <LogOut class="h-4 w-4 mr-2" />
-              Logout
+              <LogOut class="h-4 w-4 sm:mr-2" />
+              <span class="hidden sm:block">Logout</span>
             </Button>
           </div>
         </div>

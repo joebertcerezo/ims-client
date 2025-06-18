@@ -31,7 +31,7 @@
             </div>
             <div class="text-center text-sm">
               Already have an account?
-              <NuxtLink to="/signin" class="underline underline-offset-4">
+              <NuxtLink to="/" class="underline underline-offset-4">
                 Sign in
               </NuxtLink>
             </div>

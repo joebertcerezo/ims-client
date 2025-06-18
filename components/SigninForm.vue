@@ -78,16 +78,16 @@ const userForm = ref<UserLogin>({
 const handleSubmit = async (form: UserCreate) => {
   try {
     const payload = UserLoginSchema.parse(form);
-    const { data, error } = await useFetch(`${API_URL}/api/sessions`, {
+    const data = await $fetch(`${API_URL}/api/sessions`, {
       method: "POST",
       body: payload,
+      credentials: "include",
     });
-    if (!error.value) {
-      const response = UserSchema.parse(data.value);
-      await navigateTo({ path: "/dashboard" });
+    const response = UserSchema.parse(data);
+    if (response.code === "USER_LOGIN") {
+      useUserStore().setUser(response);
+      await navigateTo('/dashboard');
       window.alert("Login Successfully, Redirecting to dashboard...");
-    } else {
-      window.alert("Login Failed");
     }
   } catch (err) {
     window.alert("An error occurred.");

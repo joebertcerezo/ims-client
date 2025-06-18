@@ -27,7 +27,7 @@ export default defineNuxtConfig({
 
   runtimeConfig: {
     public: {
-      apiUrl: process.env.VITE_API_URL
+      apiUrl: ''
     }
   }
 })

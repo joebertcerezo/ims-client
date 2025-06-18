@@ -1,14 +1,12 @@
 <template>
   <section class="border-2 p-2">
-    <ClientOnly>
-      <AddProductForm
-        @product-updated="productsDataGet()"
-        v-if="userRole == 'admin'"
-      >
-        <CirclePlus class="h-4 w-4" />
-        Add Product
-      </AddProductForm>
-    </ClientOnly>
+    <AddProductForm
+      @product-updated="productsDataGet()"
+      v-if="userRole == 'admin'"
+    >
+      <CirclePlus class="h-4 w-4" />
+      Add Product
+    </AddProductForm>
 
     <Table>
       <TableHeader>
@@ -41,7 +39,10 @@
               </EditProductForm>
 
               <Button
-                class="hover:cursor-pointer"
+                :class="[
+                  'hover:cursor-pointer',
+                  userRole == 'staff' && 'hidden',
+                ]"
                 variant="ghost"
                 size="sm"
                 @click="deleteItem(product.id, product.productName)"
@@ -70,13 +71,11 @@ import {
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2, CirclePlus } from "lucide-vue-next";
 import { ProductListSchema } from "~/schema/product.schema";
-import { useLocalStorage } from "@vueuse/core";
 
 const config = useRuntimeConfig();
 const API_URL = config.public.apiUrl;
 
-const userStore = useUserStore();
-const { user } = storeToRefs(userStore);
+const { user } = storeToRefs(useUserStore());
 const userRole = computed(() => user.value?.data?.role);
 
 const emit = defineEmits<{

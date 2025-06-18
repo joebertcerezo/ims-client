@@ -1,7 +1,6 @@
 import { useLocalStorage } from '@vueuse/core'
 
 export const useUserStore = defineStore('user', () => {
-  // Use useLocalStorage directly as the primary reactive reference
   const user = useLocalStorage<User | undefined>('user', undefined, {
     serializer: {
       read: (value: string) => {

@@ -20,6 +20,7 @@
               v-model="editForm.productName"
               type="text"
               placeholder="Enter product name"
+              :disabled="userRole === 'staff'"
               required
             />
           </div>
@@ -38,14 +39,18 @@
 
           <div class="grid gap-2">
             <Label for="category">Category</Label>
-            <Select v-model="editForm.category" required>
+            <Select
+              v-model="editForm.category"
+              :disabled="userRole === 'staff'"
+              required
+            >
               <SelectTrigger>
                 <SelectValue placeholder="Select a category" />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem 
-                  v-for="category in categories" 
-                  :key="category" 
+                <SelectItem
+                  v-for="category in categories"
+                  :key="category"
                   :value="category"
                 >
                   {{ category }}
@@ -105,6 +110,10 @@ const API_URL = config.public.apiUrl;
 const isDialogOpen = ref(false);
 const isSubmitting = ref(false);
 
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
+const userRole = computed(() => user.value?.role || "staff");
+
 const editForm = ref({
   id: "",
   productName: "",
@@ -113,14 +122,14 @@ const editForm = ref({
 });
 
 const categories = [
-  'Groceries',
-  'Body Essentials',
-  'Baby & Child Essentials',
-  'Personal Care',
-  'Kitchen Essentials',
-  'Cleaning Supplies',
-  'Laundry',
-  'Bathroom Supplies'
+  "Groceries",
+  "Body Essentials",
+  "Baby & Child Essentials",
+  "Personal Care",
+  "Kitchen Essentials",
+  "Cleaning Supplies",
+  "Laundry",
+  "Bathroom Supplies",
 ];
 
 watch(
@@ -152,6 +161,7 @@ const handleEditProduct = async () => {
     const { data, error } = await useFetch(`${API_URL}/api/products`, {
       method: "PUT",
       body: payload,
+      credentials: "include",
     });
 
     if (!error.value) {

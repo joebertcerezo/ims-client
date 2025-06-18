@@ -1,7 +1,10 @@
 import { useLocalStorage } from '@vueuse/core'
+import { UserLoginSchema, UserSchema } from "~/schema/user.schema";
 
 export const useUserStore = defineStore('user', () => {
-  const user = useLocalStorage<User | undefined>('user', undefined, {
+  const isValidUser = ref(false)
+
+  const user = useLocalStorage<User>('user', {}, {
     serializer: {
       read: (value: string) => {
         try {
@@ -26,8 +29,10 @@ export const useUserStore = defineStore('user', () => {
 
   return {
     user,
+    isValidUser,
+
     setUser,
     clearUser,
-    isLoggedIn
+    isLoggedIn,
   }
 })

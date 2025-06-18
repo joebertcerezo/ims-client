@@ -1,6 +1,6 @@
 <template>
   <section class="border-2 p-2">
-    <AddProductForm @product-updated="productsDataGet()">
+    <AddProductForm @product-updated="productsDataGet()" v-if="!userRole">
       <CirclePlus class="h-4 w-4" />
       Add Product
     </AddProductForm>
@@ -65,9 +65,14 @@ import {
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2, CirclePlus } from "lucide-vue-next";
 import { ProductListSchema } from "~/schema/product.schema";
+import { useLocalStorage } from "@vueuse/core";
 
 const config = useRuntimeConfig();
 const API_URL = config.public.apiUrl;
+
+const userStore = useUserStore();
+const { user } = storeToRefs(userStore);
+const userRole = computed(() => user.value?.data?.role || "staff");
 
 const emit = defineEmits<{
   productsLoaded: [data: ProductListResponse];
@@ -77,15 +82,17 @@ const productsData = ref<ProductListResponse>();
 
 const productsDataGet = async () => {
   try {
-    const { data, error } = await useFetch(`${API_URL}/api/products`, {
+    const data = await $fetch(`${API_URL}/api/products`, {
+      key: "products",
       method: "GET",
+      credentials: "include",
     });
-    if (!error.value) {
-      const response = ProductListSchema.parse(data.value);
+    const response = ProductListSchema.parse(data);
+    if (response.code === "PRODUCT_RETRIEVED") {
       productsData.value = response;
-
-      emit("productsLoaded", response);
     }
+
+    emit("productsLoaded", response);
   } catch (err) {
     window.alert("An error occurred.");
   }
@@ -101,14 +108,17 @@ const deleteItem = async (id: string, productName: string) => {
       const { data, error } = await useFetch(`${API_URL}/api/products`, {
         method: "DELETE",
         query: { idProduct: id },
+        credentials: "include",
       });
 
       if (!error.value) {
-        const index = productsData.value?.data.findIndex(
-          (product: ProductData) => product.id === id
-        );
-        if (index !== -1) productsData.value?.data.splice(index!, 1);
-        window.alert("Product deleted successfully");
+        if (productsData.value?.data) {
+          const index = productsData.value?.data.findIndex(
+            (product: ProductData) => product.id === id
+          );
+          if (index !== -1) productsData.value?.data.splice(index!, 1);
+          window.alert("Product deleted successfully");
+        }
       }
     } catch (err) {
       window.alert("An error occurred.");

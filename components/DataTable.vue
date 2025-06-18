@@ -1,9 +1,14 @@
 <template>
   <section class="border-2 p-2">
-    <AddProductForm @product-updated="productsDataGet()" v-if="!userRole">
-      <CirclePlus class="h-4 w-4" />
-      Add Product
-    </AddProductForm>
+    <ClientOnly>
+      <AddProductForm
+        @product-updated="productsDataGet()"
+        v-if="userRole == 'admin'"
+      >
+        <CirclePlus class="h-4 w-4" />
+        Add Product
+      </AddProductForm>
+    </ClientOnly>
 
     <Table>
       <TableHeader>
@@ -72,7 +77,7 @@ const API_URL = config.public.apiUrl;
 
 const userStore = useUserStore();
 const { user } = storeToRefs(userStore);
-const userRole = computed(() => user.value?.data?.role || "staff");
+const userRole = computed(() => user.value?.data?.role);
 
 const emit = defineEmits<{
   productsLoaded: [data: ProductListResponse];
@@ -94,7 +99,7 @@ const productsDataGet = async () => {
 
     emit("productsLoaded", response);
   } catch (err) {
-    window.alert("An error occurred.");
+    console.error("An error occurred.");
   }
 };
 
@@ -121,7 +126,7 @@ const deleteItem = async (id: string, productName: string) => {
         }
       }
     } catch (err) {
-      window.alert("An error occurred.");
+      console.error("An error occurred.");
     }
   }
 };

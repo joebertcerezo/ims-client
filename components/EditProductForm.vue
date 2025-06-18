@@ -5,63 +5,60 @@
     </DialogTrigger>
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Edit Product</DialogTitle>
+        <DialogTitle>Edit Product {{ userRole }}</DialogTitle>
         <DialogDescription>
           Update the product details below. Click save when you're done.
         </DialogDescription>
       </DialogHeader>
 
       <form @submit.prevent="handleEditProduct">
-        <ClientOnly>
-          <div class="grid gap-4 py-4">
-            <div class="grid gap-2">
-              <Label for="productName">Product Name</Label>
-              <Input
-                id="productName"
-                v-model="editForm.productName"
-                type="text"
-                placeholder="Enter product name"
-                :disabled="userRole === 'staff'"
-                required
-              />
-            </div>
-
-            <div class="grid gap-2">
-              <Label for="quantity">Quantity</Label>
-              <Input
-                id="quantity"
-                v-model.number="editForm.quantity"
-                type="number"
-                placeholder="Enter quantity"
-                min="0"
-                required
-              />
-            </div>
-
-            <div class="grid gap-2">
-              <Label for="category">Category</Label>
-              <Select
-                v-model="editForm.category"
-                :disabled="userRole === 'staff'"
-                required
-              >
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a category" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem
-                    v-for="category in categories"
-                    :key="category"
-                    :value="category"
-                  >
-                    {{ category }}
-                  </SelectItem>
-                </SelectContent>
-              </Select>
-            </div>
+        <div class="grid gap-4 py-4">
+          <div class="grid gap-2">
+            <Label for="productName">Product Name</Label>
+            <Input
+              id="productName"
+              v-model="editForm.productName"
+              type="text"
+              placeholder="Enter product name"
+              :disabled="userRole === 'staff'"
+              required
+            />
           </div>
-        </ClientOnly>
 
+          <div class="grid gap-2">
+            <Label for="quantity">Quantity</Label>
+            <Input
+              id="quantity"
+              v-model.number="editForm.quantity"
+              type="number"
+              placeholder="Enter quantity"
+              min="0"
+              required
+            />
+          </div>
+
+          <div class="grid gap-2">
+            <Label for="category">Category</Label>
+            <Select
+              v-model="editForm.category"
+              :disabled="userRole === 'staff'"
+              required
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Select a category" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem
+                  v-for="category in categories"
+                  :key="category"
+                  :value="category"
+                >
+                  {{ category }}
+                </SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
         <DialogFooter>
           <Button type="submit" :disabled="isSubmitting">
             {{ isSubmitting ? "Updating..." : "Update Product" }}
@@ -92,6 +89,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { useLocalStorage } from "@vueuse/core";
 
 interface Props {
   productId?: string;
@@ -112,9 +110,8 @@ const API_URL = config.public.apiUrl;
 const isDialogOpen = ref(false);
 const isSubmitting = ref(false);
 
-const userStore = useUserStore();
-const { user } = storeToRefs(userStore);
-const userRole = computed(() => user.value?.role);
+const { user } = storeToRefs(useUserStore());
+const userRole = computed(() => user.value?.data?.role);
 
 const editForm = ref({
   id: "",

@@ -11,6 +11,7 @@
     "lint:typescript": "vue-tsc --noEmit --watch"
   },
   "dependencies": {
+    "@pinia/nuxt": "^0.11.1",
     "@tailwindcss/vite": "^4.1.10",
     "@tanstack/vue-table": "^8.21.3",
     "@vueuse/core": "^13.3.0",
@@ -18,6 +19,7 @@
     "clsx": "^2.1.1",
     "lucide-vue-next": "^0.514.0",
     "nuxt": "^3.17.5",
+    "pinia": "^3.0.3",
     "reka-ui": "^2.3.1",
     "shadcn-nuxt": "^2.2.0",
     "tailwind-merge": "^3.3.1",

@@ -107,6 +107,7 @@ const handleAddProduct = async () => {
     const { data, error } = await useFetch(`${API_URL}/api/products`, {
       method: "POST",
       body: payload,
+      credentials: 'include'
     });
 
     if (!error.value) {

@@ -134,8 +134,4 @@ const handleProductsLoaded = (data: ProductListResponse) => {
 useHead({
   title: "Dashboard - Inventory Management System",
 });
-
-// definePageMeta({
-//   middleware: 'auth'
-// })
 </script>

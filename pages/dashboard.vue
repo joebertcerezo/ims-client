@@ -15,7 +15,7 @@
           <div class="flex items-center gap-4">
             <Button variant="outline" size="sm">
               <User class="h-4 w-4 sm:mr-2" />
-              <span class="hidden sm:block">Profile</span> 
+              <span class="hidden sm:block">Profile</span>
             </Button>
             <Button variant="ghost" size="sm">
               <LogOut class="h-4 w-4 sm:mr-2" />
@@ -37,8 +37,12 @@
                   <Package class="h-6 w-6 text-primary" />
                 </div>
                 <div>
-                  <p class="text-sm font-medium text-muted-foreground">Total Products</p>
-                  <p class="text-2xl font-bold">{{ productsData?.data?.length || 0 }}</p>
+                  <p class="text-sm font-medium text-muted-foreground">
+                    Total Products
+                  </p>
+                  <p class="text-2xl font-bold">
+                    {{ productsData?.data?.length || 0 }}
+                  </p>
                 </div>
               </div>
             </CardContent>
@@ -51,7 +55,9 @@
                   <TrendingUp class="h-6 w-6 text-green-600" />
                 </div>
                 <div>
-                  <p class="text-sm font-medium text-muted-foreground">Total Quantity</p>
+                  <p class="text-sm font-medium text-muted-foreground">
+                    Total Quantity
+                  </p>
                   <p class="text-2xl font-bold">{{ totalQuantity }}</p>
                 </div>
               </div>
@@ -65,7 +71,9 @@
                   <Layers class="h-6 w-6 text-blue-600" />
                 </div>
                 <div>
-                  <p class="text-sm font-medium text-muted-foreground">Categories</p>
+                  <p class="text-sm font-medium text-muted-foreground">
+                    Categories
+                  </p>
                   <p class="text-2xl font-bold">{{ uniqueCategories }}</p>
                 </div>
               </div>
@@ -99,24 +107,23 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import { 
-  User, 
-  LogOut, 
-  Package, 
-  TrendingUp, 
-  Layers 
-} from "lucide-vue-next";
+import { User, LogOut, Package, TrendingUp, Layers } from "lucide-vue-next";
 
 const productsData = ref<ProductListResponse | null>(null);
 
 const totalQuantity = computed(() => {
   if (!productsData.value?.data) return 0;
-  return productsData.value.data.reduce((sum, product) => sum + product.quantity, 0);
+  return productsData.value.data.reduce(
+    (sum, product) => sum + product.quantity,
+    0
+  );
 });
 
 const uniqueCategories = computed(() => {
   if (!productsData.value?.data) return 0;
-  const categories = new Set(productsData.value.data.map(product => product.category.name));
+  const categories = new Set(
+    productsData.value.data.map((product) => product.category.name)
+  );
   return categories.size;
 });
 
@@ -125,6 +132,10 @@ const handleProductsLoaded = (data: ProductListResponse) => {
 };
 
 useHead({
-  title: 'Dashboard - Inventory Management System'
+  title: "Dashboard - Inventory Management System",
 });
+
+// definePageMeta({
+//   middleware: 'auth'
+// })
 </script>

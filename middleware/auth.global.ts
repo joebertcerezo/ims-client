@@ -1,23 +1,31 @@
 import { UserSchema } from "~/schema/user.schema";
+import { useLocalStorage } from "@vueuse/core";
 
 export default defineNuxtRouteMiddleware(async (to, from) => {
-  if (process.server) return;
+  if (import.meta.client) return;
 
   const userStore = useUserStore();
   const { user, isLoggedIn } = storeToRefs(userStore);
+  const userStorage = useLocalStorage("user", user);
 
   const currentPage = to.path;
   const publicRoutes = ['/', '/signup'];
   const isExempted = publicRoutes.includes(currentPage);
+  const isValid = await isValidUser()
 
-  const isValid = await isValidUser();
-
-  if (isValid && isExempted) {
-    return navigateTo('/dashboard');
-  }
-
-  if (!isValid && !isExempted) {
-    return navigateTo('/');
+  if(isExempted){
+    if(isValid){
+      return navigateTo('/dashboard')
+    }else{
+      return
+    }
+  }else {
+    if(!isValid){
+      return navigateTo('/')
+    }else{
+      return
+    }
+    
   }
 
 });

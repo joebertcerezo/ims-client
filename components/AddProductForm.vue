@@ -110,17 +110,6 @@ const handleAddProduct = async () => {
 
     errorMsg.value = error.value?.data.code
 
-    // const payload = {
-    //   productName: productForm.value.productName,
-    //   quantity: productForm.value.quantity,
-    //   category: productForm.value.category,
-    // };
-
-    // const data = await $fetch(`${API_URL}/api/products`, {
-    //   method: "POST",
-    //   body: payload,
-    //   credentials: 'include'
-    // });
     const response = ProductResponseSchema.parse(data.value)
     console.log(response.status)
     if (response.code === 'PRODUCT_SAVED') {

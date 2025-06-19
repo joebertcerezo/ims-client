@@ -15,9 +15,9 @@
           <div class="flex items-center gap-4">
             <Button variant="outline" size="sm">
               <User class="h-4 w-4 sm:mr-2" />
-              <span class="hidden sm:block">Profile</span>
+              <span class="hidden sm:block">{{ currentUser.data?.email }}</span>
             </Button>
-            <Button variant="ghost" size="sm">
+            <Button variant="ghost" size="sm" @click="handleLogout()">
               <LogOut class="h-4 w-4 sm:mr-2" />
               <span class="hidden sm:block">Logout</span>
             </Button>
@@ -108,8 +108,13 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { User, LogOut, Package, TrendingUp, Layers } from "lucide-vue-next";
+import { UserLogoutSchema } from "~/schema/user.schema";
+
+const { public: { apiUrl: API_URL } } = useRuntimeConfig();
 
 const productsData = ref<ProductListResponse | null>(null);
+
+const { currentUser } = storeToRefs(useUserStore())
 
 const totalQuantity = computed(() => {
   if (!productsData.value?.data) return 0;
@@ -130,6 +135,22 @@ const uniqueCategories = computed(() => {
 const handleProductsLoaded = (data: ProductListResponse) => {
   productsData.value = data;
 };
+
+const handleLogout = async () => {
+  try {
+    const data = await $fetch(`${API_URL}/api/sessions`,{
+      method: "DELETE",
+      credentials: "include"
+    })
+    const response = UserLogoutSchema.parse(data)
+    if(response.code === 'USER_LOGOUT'){
+      window.alert("Logout Successfully")
+      navigateTo('/')
+    }
+  } catch (error) {
+    console.log(error)
+  }
+}
 
 useHead({
   title: "Dashboard - Inventory Management System",

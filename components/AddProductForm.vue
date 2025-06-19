@@ -68,8 +68,9 @@
 </template>
 
 <script lang="ts" setup>
-const config = useRuntimeConfig();
-const API_URL = config.public.apiUrl;
+import { ProductResponseSchema } from '~/schema/product.schema';
+
+const { public: { apiUrl: API_URL } } = useRuntimeConfig();
 
 const emits = defineEmits<{
   (e: "productUpdated"): void;
@@ -104,13 +105,13 @@ const handleAddProduct = async () => {
       category: productForm.value.category,
     };
 
-    const { data, error } = await useFetch(`${API_URL}/api/products`, {
+    const data = await $fetch(`${API_URL}/api/products`, {
       method: "POST",
       body: payload,
       credentials: 'include'
     });
-
-    if (!error.value) {
+    const response = ProductResponseSchema.parse(data)
+    if (response.code === 'PRODUCT_SAVED') {
       window.alert("Product added successfully");
 
       productForm.value = {

@@ -2,7 +2,7 @@
   <section class="border-2 p-2">
     <AddProductForm
       @product-updated="productsDataGet()"
-      v-if="userRole == 'admin'"
+      v-if="currentUser.data?.role === 'admin'"
     >
       <CirclePlus class="h-4 w-4" />
       Add Product
@@ -39,12 +39,10 @@
               </EditProductForm>
 
               <Button
-                :class="[
-                  'hover:cursor-pointer',
-                  userRole == 'staff' && 'hidden',
-                ]"
+                class="hover:cursor-pointer"
                 variant="ghost"
                 size="sm"
+                v-if="currentUser.data?.role === 'admin'"
                 @click="deleteItem(product.id, product.productName)"
               >
                 <Trash2 class="h-4 w-4 text-destructive" />
@@ -70,13 +68,11 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2, CirclePlus } from "lucide-vue-next";
-import { ProductListSchema } from "~/schema/product.schema";
+import { ProductResponseSchema, ProductListSchema } from "~/schema/product.schema";
 
-const config = useRuntimeConfig();
-const API_URL = config.public.apiUrl;
+const { public: { apiUrl: API_URL } } = useRuntimeConfig();
 
-const { user } = storeToRefs(useUserStore());
-const userRole = computed(() => user.value?.data?.role);
+const { currentUser } = storeToRefs(useUserStore())
 
 const emit = defineEmits<{
   productsLoaded: [data: ProductListResponse];
@@ -109,13 +105,13 @@ const formatDate = (dateString: string) => {
 const deleteItem = async (id: string, productName: string) => {
   if (confirm(`Are you sure you want to delete item ${productName}?`)) {
     try {
-      const { data, error } = await useFetch(`${API_URL}/api/products`, {
+      const data = await $fetch(`${API_URL}/api/products`, {
         method: "DELETE",
         query: { idProduct: id },
         credentials: "include",
       });
-
-      if (!error.value) {
+      const response = ProductResponseSchema.parse(data)
+      if (response.code === 'PRODUCT_DELETED') {
         if (productsData.value?.data) {
           const index = productsData.value?.data.findIndex(
             (product: ProductData) => product.id === id

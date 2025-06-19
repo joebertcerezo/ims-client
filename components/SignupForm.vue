@@ -63,8 +63,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { UserCreateSchema, UserSchema } from "~/schema/user.schema";
 
-const config = useRuntimeConfig();
-const API_URL = config.public.apiUrl;
+const { public: { apiUrl: API_URL } } = useRuntimeConfig();
 
 const userForm = ref<UserCreate>({
   email: "",
@@ -78,12 +77,12 @@ const props = defineProps<{
 const handleSubmit = async (form: UserCreate) => {
   try {
     const payload = UserCreateSchema.parse(form);
-    const { data, error } = await useFetch(`${API_URL}/api/users`, {
+    const data = await $fetch(`${API_URL}/api/users`, {
       method: "POST",
       body: payload,
     });
-    if (!error.value) {
-      const response = UserSchema.parse(data.value);
+    const response = UserSchema.parse(data);
+    if (response.code === 'USER_CREATED') {
       window.alert("User Created Successfully");
     } else {
       window.alert("User Creation Failed");

@@ -1,55 +1,36 @@
+import { z } from "zod"
 import { UserSchema } from "~/schema/user.schema";
-import { useLocalStorage } from "@vueuse/core";
 
-export default defineNuxtRouteMiddleware(async (to, from) => {
-  if (import.meta.client) return;
+export default defineNuxtRouteMiddleware(async (to) => {
+    if (import.meta.client) return
 
-  const userStore = useUserStore();
-  const { user, isLoggedIn } = storeToRefs(userStore);
-  const userStorage = useLocalStorage("user", user);
+    const { findSession, setUser } = useUserStore()
+    const { isValidUser, currentUser, isLoggedIn } = storeToRefs(useUserStore())
 
-  const currentPage = to.path;
-  const publicRoutes = ['/', '/signup'];
-  const isExempted = publicRoutes.includes(currentPage);
-  const isValid = await isValidUser()
+    const currentPage = z.string().parse(to.name)
+    const isExempted = ['index', 'signup'].includes(currentPage)
 
-  if(isExempted){
-    if(isValid){
-      return navigateTo('/dashboard')
-    }else{
-      return
+    const cookie = z.string().nullish().parse(useCookie('jwt').value)
+
+    if (isExempted) {
+        if (cookie) return navigateTo('/dashboard')
+        return
+    } else if (!cookie) {
+        return navigateTo('/')
+    } else {
+        try {
+            if (!isLoggedIn.value) {
+                const { code, data } = await findSession()
+                if (code === 'USER_SESSION_FOUND') {
+                    const user = UserSchema.parse(data)
+                    isValidUser.value = true
+                    isLoggedIn.value = true
+                    // currentUser.value = user
+                    setUser(user)
+                }
+            }
+        } catch (e) {
+            console.log(e)
+        }
     }
-  }else {
-    if(!isValid){
-      return navigateTo('/')
-    }else{
-      return
-    }
-    
-  }
-
-});
-
-async function isValidUser() {
-  try {
-    const config = useRuntimeConfig();
-    const API_URL = config.public.apiUrl;
-
-    const data = await $fetch(`${API_URL}/api/sessions`, {
-      method: "GET",
-      credentials: "include",
-    });
-    
-    const response = UserSchema.parse(data);
-    
-    if (response.code === "USER_FOUND") {
-      console.log(response.code)
-      useUserStore().setUser(response);
-      return true;
-    }
-    return false;
-  } catch (err) {
-    console.error("Authentication failed:", err);
-    return false;
-  }
-}
+})

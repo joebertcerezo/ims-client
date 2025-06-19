@@ -1,38 +1,62 @@
 import { useLocalStorage } from '@vueuse/core'
-import { UserLoginSchema, UserSchema } from "~/schema/user.schema";
+import { UserSchema } from "~/schema/user.schema";
 
 export const useUserStore = defineStore('user', () => {
-  const isValidUser = ref(false)
+  const { public: { apiUrl: API_URL } } = useRuntimeConfig();
 
-  const user = useLocalStorage<User>('user', {}, {
-    serializer: {
-      read: (value: string) => {
-        try {
-          return value ? JSON.parse(value) : undefined
-        } catch {
-          return undefined
-        }
-      },
-      write: (value: User | undefined) => JSON.stringify(value || null)
-    }
-  })
+  const isValidUser = ref(false)
+  const isLoggedIn = ref(false)
+
+  const currentUser = ref<Partial<User>>()
 
   const setUser = (newUser: User) => {
-    user.value = newUser
+    currentUser.value = newUser
+    isValidUser.value = true
+    isLoggedIn.value = true
   }
 
   const clearUser = () => {
-    user.value = undefined
+    currentUser.value = undefined
+    isValidUser.value = false
+    isLoggedIn.value = false
   }
 
-  const isLoggedIn = computed(() => !!user.value)
+  async function findSession() {
+    try {
+       const headers: Record<string, string> = {}
+
+      if (import.meta.server) {
+        const event = await useRequestEvent()
+        if (event?.node.req.headers.cookie) {
+          headers.cookie = event.node.req.headers.cookie
+        }
+      }
+
+      const data = await $fetch(`${API_URL}/api/sessions`, {
+        method: "GET",
+        credentials: "include",
+        headers
+      })
+      const response = UserSchema.parse(data)
+      if (response.code === 'USER_SESSION_FOUND') {
+        setUser(response)
+        return { code: response.code, data: response }
+      }
+      clearUser()
+      return { code: response.code, data: response }
+    } catch (error) {
+      console.error("Error")
+      clearUser()
+      return { code: 'SESSION_ERROR', data: null }
+    }
+  }
 
   return {
-    user,
+    currentUser,
     isValidUser,
+    isLoggedIn,
 
     setUser,
-    clearUser,
-    isLoggedIn,
+    findSession
   }
 })

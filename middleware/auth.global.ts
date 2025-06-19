@@ -4,8 +4,8 @@ import { UserSchema } from "~/schema/user.schema";
 export default defineNuxtRouteMiddleware(async (to) => {
     if (import.meta.client) return
 
-    const { findSession, setUser } = useUserStore()
-    const { isValidUser, currentUser, isLoggedIn } = storeToRefs(useUserStore())
+    const { findSession } = useUserStore()
+    const { isLoggedIn } = storeToRefs(useUserStore())
 
     const currentPage = z.string().parse(to.name)
     const isExempted = ['index', 'signup'].includes(currentPage)
@@ -20,14 +20,7 @@ export default defineNuxtRouteMiddleware(async (to) => {
     } else {
         try {
             if (!isLoggedIn.value) {
-                const { code, data } = await findSession()
-                if (code === 'USER_SESSION_FOUND') {
-                    const user = UserSchema.parse(data)
-                    isValidUser.value = true
-                    isLoggedIn.value = true
-                    // currentUser.value = user
-                    setUser(user)
-                }
+                await findSession()
             }
         } catch (e) {
             console.log(e)

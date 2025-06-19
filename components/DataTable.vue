@@ -68,7 +68,7 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Edit, Trash2, CirclePlus } from "lucide-vue-next";
-import { ProductResponseSchema, ProductListSchema } from "~/schema/product.schema";
+import { ProductResponseSchema, ProductListSchema, type ProductResponse } from "~/schema/product.schema";
 
 const { public: { apiUrl: API_URL } } = useRuntimeConfig();
 
@@ -82,17 +82,22 @@ const productsData = ref<ProductListResponse>();
 
 const productsDataGet = async () => {
   try {
-    const data = await $fetch(`${API_URL}/api/products`, {
-      key: "products",
+    const data = await $fetch<ProductListResponse>(`${API_URL}/api/products`, {
       method: "GET",
       credentials: "include",
     });
-    const response = ProductListSchema.parse(data);
-    if (response.code === "PRODUCT_RETRIEVED") {
-      productsData.value = response;
+
+    const response = ProductListSchema.safeParse(data)
+
+    if (response.error) {
+      throw Error("Test")
     }
 
-    emit("productsLoaded", response);
+    if (response.data.code === "PRODUCT_RETRIEVED") {
+      productsData.value = response.data
+    }
+
+    emit("productsLoaded", response.data);
   } catch (err) {
     console.error("An error occurred.");
   }
@@ -105,13 +110,20 @@ const formatDate = (dateString: string) => {
 const deleteItem = async (id: string, productName: string) => {
   if (confirm(`Are you sure you want to delete item ${productName}?`)) {
     try {
-      const data = await $fetch(`${API_URL}/api/products`, {
+      const data = await $fetch<ProductResponse>(`${API_URL}/api/products`, {
         method: "DELETE",
         query: { idProduct: id },
         credentials: "include",
       });
-      const response = ProductResponseSchema.parse(data)
-      if (response.code === 'PRODUCT_DELETED') {
+      console.log(data)
+      
+      const response = ProductResponseSchema.safeParse(data)
+
+      if (response.error) {
+        throw Error("Test")
+      }
+
+      if (response.data.code === 'PRODUCT_DELETED') {
         if (productsData.value?.data) {
           const index = productsData.value?.data.findIndex(
             (product: ProductData) => product.id === id

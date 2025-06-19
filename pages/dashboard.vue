@@ -133,6 +133,7 @@ const uniqueCategories = computed(() => {
 });
 
 const handleProductsLoaded = (data: ProductListResponse) => {
+  console.log(data)
   productsData.value = data;
 };
 
@@ -142,6 +143,7 @@ const handleLogout = async () => {
       method: "DELETE",
       credentials: "include"
     })
+    console.log(data)
     const response = UserLogoutSchema.parse(data)
     if(response.code === 'USER_LOGOUT'){
       window.alert("Logout Successfully")

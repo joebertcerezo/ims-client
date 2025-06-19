@@ -14,4 +14,6 @@ export const ProductResponseSchema = ApiResponseSchema(z.string())
 
 export const ProductListSchema = ApiResponseSchema(z.array(ProductDataSchema))
 
+export type ProductResponse = z.infer< typeof ProductResponseSchema >
+
 

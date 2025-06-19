@@ -110,8 +110,12 @@ const handleAddProduct = async () => {
       body: payload,
       credentials: 'include'
     });
-    const response = ProductResponseSchema.parse(data)
-    if (response.code === 'PRODUCT_SAVED') {
+    const response = ProductResponseSchema.safeParse(data)
+
+    if (response.error) {
+      throw Error("Test")
+    }
+    if (response.data.code === 'PRODUCT_SAVED') {
       window.alert("Product added successfully");
 
       productForm.value = {

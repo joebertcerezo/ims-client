@@ -67,8 +67,7 @@ const props = defineProps<{
   class?: HTMLAttributes["class"];
 }>();
 
-const config = useRuntimeConfig();
-const API_URL = config.public.apiUrl;
+const { public: { apiUrl: API_URL } } = useRuntimeConfig();
 
 const userForm = ref<UserLogin>({
   email: "",
@@ -86,8 +85,7 @@ const handleSubmit = async (form: UserCreate) => {
     const response = UserSchema.parse(data);
     if (response.code === "USER_LOGIN") {
       useUserStore().setUser(response);
-      await navigateTo('/dashboard');
-      window.alert("Login Successfully, Redirecting to dashboard...");
+      await navigateTo("/dashboard");
     }
   } catch (err) {
     window.alert("An error occurred.");

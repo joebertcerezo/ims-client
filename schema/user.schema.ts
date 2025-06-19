@@ -17,3 +17,5 @@ export const UserLoginSchema = z.object({
   email: z.string().email('Invalid email address'),
   password: z.string(),
 })
+
+export const UserLogoutSchema = ApiResponseSchema(z.object({}).nullish())

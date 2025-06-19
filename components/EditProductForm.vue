@@ -5,7 +5,7 @@
     </DialogTrigger>
     <DialogContent>
       <DialogHeader>
-        <DialogTitle>Edit Product {{ userRole }}</DialogTitle>
+        <DialogTitle>Edit Product</DialogTitle>
         <DialogDescription>
           Update the product details below. Click save when you're done.
         </DialogDescription>
@@ -20,7 +20,7 @@
               v-model="editForm.productName"
               type="text"
               placeholder="Enter product name"
-              :disabled="userRole === 'staff'"
+              :disabled="currentUser.data?.role === 'staff'"
               required
             />
           </div>
@@ -41,7 +41,7 @@
             <Label for="category">Category</Label>
             <Select
               v-model="editForm.category"
-              :disabled="userRole === 'staff'"
+              :disabled="currentUser.data?.role === 'staff'"
               required
             >
               <SelectTrigger>
@@ -90,6 +90,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLocalStorage } from "@vueuse/core";
+import { ProductResponseSchema } from "~/schema/product.schema";
 
 interface Props {
   productId?: string;
@@ -104,14 +105,12 @@ const emit = defineEmits<{
   productUpdated: [];
 }>();
 
-const config = useRuntimeConfig();
-const API_URL = config.public.apiUrl;
+const { public: { apiUrl: API_URL } } = useRuntimeConfig();
+
+const { currentUser } = storeToRefs(useUserStore())
 
 const isDialogOpen = ref(false);
 const isSubmitting = ref(false);
-
-const { user } = storeToRefs(useUserStore());
-const userRole = computed(() => user.value?.data?.role);
 
 const editForm = ref({
   id: "",
@@ -157,13 +156,13 @@ const handleEditProduct = async () => {
       category: editForm.value.category,
     };
 
-    const { data, error } = await useFetch(`${API_URL}/api/products`, {
+    const data = await $fetch(`${API_URL}/api/products`, {
       method: "PUT",
       body: payload,
       credentials: "include",
     });
-
-    if (!error.value) {
+    const response = ProductResponseSchema.parse(data)
+    if (response.code === 'PRODUCT_EDITED') {
       window.alert("Product updated successfully");
       isDialogOpen.value = false;
       emit("productUpdated");

@@ -10,6 +10,8 @@ export const ProductDataSchema = z.object({
   createdAt: z.string()
 })
 
+export const ProductResponseSchema = ApiResponseSchema(z.string())
+
 export const ProductListSchema = ApiResponseSchema(z.array(ProductDataSchema))
 
 

@@ -95,22 +95,34 @@ const categories = [
   "Bathroom Supplies",
 ];
 
+const { data, error, execute } = useFetch(() => `${API_URL}/api/products`, {
+      method: "POST",
+      body: productForm,
+      credentials: 'include',
+      immediate: false,
+      watch: false
+    })
+const errorMsg = ref()
 const handleAddProduct = async () => {
   try {
     isSubmitting.value = true;
+    await execute()
 
-    const payload = {
-      productName: productForm.value.productName,
-      quantity: productForm.value.quantity,
-      category: productForm.value.category,
-    };
+    errorMsg.value = error.value?.data.code
 
-    const data = await $fetch(`${API_URL}/api/products`, {
-      method: "POST",
-      body: payload,
-      credentials: 'include'
-    });
-    const response = ProductResponseSchema.parse(data)
+    // const payload = {
+    //   productName: productForm.value.productName,
+    //   quantity: productForm.value.quantity,
+    //   category: productForm.value.category,
+    // };
+
+    // const data = await $fetch(`${API_URL}/api/products`, {
+    //   method: "POST",
+    //   body: payload,
+    //   credentials: 'include'
+    // });
+    const response = ProductResponseSchema.parse(data.value)
+    console.log(response.status)
     if (response.code === 'PRODUCT_SAVED') {
       window.alert("Product added successfully");
 
@@ -125,7 +137,7 @@ const handleAddProduct = async () => {
       emits("productUpdated");
     }
   } catch (err) {
-    window.alert("An error occurred.");
+    window.alert(errorMsg.value);
   } finally {
     isSubmitting.value = false;
   }

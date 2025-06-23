@@ -11,7 +11,9 @@ import {
 } from '@/components/ui/dialog'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import { ProfileResponseSchema, ProfileCreateSchema } from '~/schema/profile.scema'
+import { ProfileResponseSchema, ProfileSavedResponseSchema } from '~/schema/profile.scema'
+import { toast } from 'vue-sonner'
+import 'vue-sonner/style.css'
 
 const { public: { apiUrl: API_URL } } = useRuntimeConfig();
 
@@ -46,11 +48,24 @@ const { data: savedProfiles, execute: saveProfile, error: saveError } = useFetch
   immediate: false,
   watch: false
 })
+const toastMsg = ref('')
+const toastStyle = ref('')
 
 const save = async() => {
-  await saveProfile()
-  console.log(savedProfiles.value)
-  console.log(saveError.value)
+  try {
+    await saveProfile()
+    const response = ProfileSavedResponseSchema.parse(savedProfiles.value)
+    console.log(response.code)
+    if(response.code === 'PROFILE_SAVED') {
+      toastStyle.value = '#73EC8B'
+      toastMsg.value = 'Profile saved successfully.'
+    }
+    
+} catch(e) {
+  toastMsg.value = 'Something went wrong. Try again later.'
+  toastStyle.value = '#FF4848'
+  console.error(e)
+}
 }
 </script>
 
@@ -69,7 +84,7 @@ const save = async() => {
           Make changes to your profile here. Click save when you're done.
         </DialogDescription>
       </DialogHeader>
-      <form @submit="save">
+      <form @submit.prevent="save">
       <div class="grid gap-4 py-4">
         <div class="grid grid-cols-4 items-center gap-2">
           <Label for="firstName" class="text-right">
@@ -91,7 +106,14 @@ const save = async() => {
         </div>
       </div>
       <DialogFooter>
-        <Button type="submit">
+        <Button type="submit" @click="() => {
+              toast(toastMsg, {
+                style:{
+                  background: toastStyle
+                } 
+              });
+            }
+          ">
           Save changes
         </Button>
       </DialogFooter>

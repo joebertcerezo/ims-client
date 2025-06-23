@@ -1,3 +1,54 @@
+<template>
+  <Dialog>
+    <DialogTrigger as-child>
+      <Button variant="outline" @click="getProfile">
+        Edit Profile
+      </Button>
+    </DialogTrigger>
+    <DialogContent class="sm:max-w-[425px]">
+      <DialogHeader>
+        <DialogTitle>Edit profile</DialogTitle>
+        <DialogDescription>
+          Make changes to your profile here. Click save when you're done.
+        </DialogDescription>
+      </DialogHeader>
+      <form @submit.prevent="save">
+      <div class="grid gap-4 py-4">
+        <div class="grid grid-cols-4 items-center gap-2">
+          <Label for="firstName" class="text-right">
+            First name
+          </Label>
+          <Input id="firstName" v-model="formData.firstName" class="col-span-3" required/>
+        </div>
+        <div class="grid grid-cols-4 items-center gap-2">
+          <Label for="middleName" class="text-right">
+            Middle name
+          </Label>
+          <Input id="middleName" v-model="formData.middleName!" class="col-span-3" />
+        </div>
+        <div class="grid grid-cols-4 items-center gap-2">
+          <Label for="lastName" class="text-right">
+            Last name
+          </Label>
+          <Input id="lastName" v-model="formData.lastName" class="col-span-3" required/>
+        </div>
+      </div>
+      <DialogFooter>
+        <Button type="submit" @click="() => {
+              toast(toastMsg, {
+                style:{
+                  background: toastStyle
+                } 
+              });
+            }
+          ">
+          Save changes
+        </Button>
+      </DialogFooter>
+      </form>
+    </DialogContent>
+  </Dialog>
+</template>
 <script setup lang="ts">
 import { Button } from '@/components/ui/button'
 import {
@@ -55,7 +106,6 @@ const save = async() => {
   try {
     await saveProfile()
     const response = ProfileSavedResponseSchema.parse(savedProfiles.value)
-    console.log(response.code)
     if(response.code === 'PROFILE_SAVED') {
       toastStyle.value = '#73EC8B'
       toastMsg.value = 'Profile saved successfully.'
@@ -64,60 +114,6 @@ const save = async() => {
 } catch(e) {
   toastMsg.value = 'Something went wrong. Try again later.'
   toastStyle.value = '#FF4848'
-  console.error(e)
 }
 }
 </script>
-
-
-<template>
-  <Dialog>
-    <DialogTrigger as-child>
-      <Button variant="outline" @click="getProfile">
-        Edit Profile
-      </Button>
-    </DialogTrigger>
-    <DialogContent class="sm:max-w-[425px]">
-      <DialogHeader>
-        <DialogTitle>Edit profile</DialogTitle>
-        <DialogDescription>
-          Make changes to your profile here. Click save when you're done.
-        </DialogDescription>
-      </DialogHeader>
-      <form @submit.prevent="save">
-      <div class="grid gap-4 py-4">
-        <div class="grid grid-cols-4 items-center gap-2">
-          <Label for="firstName" class="text-right">
-            First name
-          </Label>
-          <Input id="firstName" v-model="formData.firstName" class="col-span-3" required/>
-        </div>
-        <div class="grid grid-cols-4 items-center gap-2">
-          <Label for="middleName" class="text-right">
-            Middle name
-          </Label>
-          <Input id="middleName" v-model="formData.middleName!" class="col-span-3" />
-        </div>
-        <div class="grid grid-cols-4 items-center gap-2">
-          <Label for="lastName" class="text-right">
-            Last name
-          </Label>
-          <Input id="lastName" v-model="formData.lastName" class="col-span-3" required/>
-        </div>
-      </div>
-      <DialogFooter>
-        <Button type="submit" @click="() => {
-              toast(toastMsg, {
-                style:{
-                  background: toastStyle
-                } 
-              });
-            }
-          ">
-          Save changes
-        </Button>
-      </DialogFooter>
-      </form>
-    </DialogContent>
-  </Dialog>
-</template>

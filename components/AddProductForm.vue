@@ -58,7 +58,14 @@
         </div>
 
         <DialogFooter>
-          <Button type="submit" :disabled="isSubmitting">
+          <Button type="submit" :disabled="isSubmitting" @click="() => {
+              toast(toastMsg, {
+                style:{
+                  background: toastStyle
+                } 
+              });
+            }
+          ">
             {{ isSubmitting ? "Saving..." : "Save Product" }}
           </Button>
         </DialogFooter>
@@ -69,6 +76,7 @@
 
 <script lang="ts" setup>
 import { ProductResponseSchema } from '~/schema/product.schema';
+import { toast } from 'vue-sonner'
 
 const { public: { apiUrl: API_URL } } = useRuntimeConfig();
 
@@ -83,6 +91,8 @@ const productForm = ref({
 });
 const isSubmitting = ref(false);
 const isDialogOpen = ref(false);
+const toastMsg = ref('');
+const toastStyle = ref('');
 
 const categories = [
   "Groceries",
@@ -113,7 +123,8 @@ const handleAddProduct = async () => {
     const response = ProductResponseSchema.parse(data.value)
     console.log(response.status)
     if (response.code === 'PRODUCT_SAVED') {
-      window.alert("Product added successfully");
+      toastStyle.value = '#73EC8B'
+      toastMsg.value = 'Product added successfully.'
 
       productForm.value = {
         productName: "",
@@ -126,7 +137,9 @@ const handleAddProduct = async () => {
       emits("productUpdated");
     }
   } catch (err) {
-    window.alert(errorMsg.value);
+    toastMsg.value = errorMsg.value
+    toastStyle.value = '#FF4848'
+    console.error(errorMsg.value);
   } finally {
     isSubmitting.value = false;
   }

@@ -13,10 +13,7 @@
             </p>
           </div>
           <div class="flex items-center gap-4">
-            <Button variant="outline" size="sm">
-              <User class="h-4 w-4 sm:mr-2" />
-              <span class="hidden sm:block">{{ currentUser.data?.email }}</span>
-            </Button>
+            <ProfileForm/>
             <Button variant="ghost" size="sm" @click="handleLogout()">
               <LogOut class="h-4 w-4 sm:mr-2" />
               <span class="hidden sm:block">Logout</span>
@@ -93,6 +90,7 @@
             <DataTable @products-loaded="handleProductsLoaded" />
           </CardContent>
         </Card>
+        <Toaster class="pointer-events-auto" />
       </div>
     </main>
   </div>
@@ -109,6 +107,7 @@ import {
 } from "@/components/ui/card";
 import { User, LogOut, Package, TrendingUp, Layers } from "lucide-vue-next";
 import { UserLogoutSchema } from "~/schema/user.schema";
+import { Toaster } from 'vue-sonner'
 
 const { public: { apiUrl: API_URL } } = useRuntimeConfig();
 

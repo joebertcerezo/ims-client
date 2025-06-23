@@ -12,3 +12,5 @@ export const ProfileResponseSchema = ApiResponseSchema(z.object({
     middleName: z.string().nullish(),
     lastName: z.string()
 }))
+
+export const ProfileSavedResponseSchema = ApiResponseSchema(z.object({}))

@@ -136,7 +136,6 @@ const formatDate = (dateString: string) => {
 };
 
 const deleteItem = async (id: string, productName: string) => {
-  // if (confirm(`Are you sure you want to delete item ${productName}?`)) {
     try {
       const data = await $fetch(`${API_URL}/api/products`, {
         method: "DELETE",
@@ -159,7 +158,6 @@ const deleteItem = async (id: string, productName: string) => {
       toastMsg.value = 'Something went wrong. Try again later.'
       toastStyle.value = '#FF4848'
     }
-  // }
 };
 
 onMounted(async () => {

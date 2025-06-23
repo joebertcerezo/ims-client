@@ -90,6 +90,7 @@
             <DataTable @products-loaded="handleProductsLoaded" />
           </CardContent>
         </Card>
+        <Toaster class="pointer-events-auto" />
       </div>
     </main>
   </div>
@@ -106,6 +107,7 @@ import {
 } from "@/components/ui/card";
 import { User, LogOut, Package, TrendingUp, Layers } from "lucide-vue-next";
 import { UserLogoutSchema } from "~/schema/user.schema";
+import { Toaster } from 'vue-sonner'
 
 const { public: { apiUrl: API_URL } } = useRuntimeConfig();
 

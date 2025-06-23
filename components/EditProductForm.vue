@@ -60,7 +60,14 @@
           </div>
         </div>
         <DialogFooter>
-          <Button type="submit" :disabled="isSubmitting">
+          <Button type="submit" :disabled="isSubmitting" @click="() => {
+              toast(toastMsg, {
+                style:{
+                  background: toastStyle
+                } 
+              });
+            }
+          ">
             {{ isSubmitting ? "Updating..." : "Update Product" }}
           </Button>
         </DialogFooter>
@@ -91,6 +98,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useLocalStorage } from "@vueuse/core";
 import { ProductResponseSchema } from "~/schema/product.schema";
+import { toast } from 'vue-sonner'
 
 interface Props {
   productId?: string;
@@ -111,6 +119,8 @@ const { currentUser } = storeToRefs(useUserStore())
 
 const isDialogOpen = ref(false);
 const isSubmitting = ref(false);
+const toastMsg = ref('')
+const toastStyle = ref('')
 
 const editForm = ref({
   id: "",
@@ -163,12 +173,14 @@ const handleEditProduct = async () => {
     });
     const response = ProductResponseSchema.parse(data)
     if (response.code === 'PRODUCT_EDITED') {
-      window.alert("Product updated successfully");
+      toastStyle.value = '#73EC8B'
+      toastMsg.value = 'Profile updated successfully.'
       isDialogOpen.value = false;
       emit("productUpdated");
     }
   } catch (err) {
-    window.alert("An error occurred while updating the product");
+    toastMsg.value = 'Something went wrong. Try again later.'
+    toastStyle.value = '#FF4848'
   } finally {
     isSubmitting.value = false;
   }

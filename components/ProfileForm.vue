@@ -12,7 +12,7 @@
           Make changes to your profile here. Click save when you're done.
         </DialogDescription>
       </DialogHeader>
-      <form @submit.prevent="save">
+      <form @submit="save">
       <div class="grid gap-4 py-4">
         <div class="grid grid-cols-4 items-center gap-2">
           <Label for="firstName" class="text-right">
@@ -111,9 +111,9 @@ const save = async() => {
       toastMsg.value = 'Profile saved successfully.'
     }
     
-} catch(e) {
+  } catch(e) {
   toastMsg.value = 'Something went wrong. Try again later.'
   toastStyle.value = '#FF4848'
-}
+  }
 }
 </script>

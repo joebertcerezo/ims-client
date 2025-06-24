@@ -15,6 +15,7 @@
                   v-model="userForm.email"
                   type="email"
                   placeholder="m@example.com"
+                  autocomplete="off"
                   required
                 />
               </div>

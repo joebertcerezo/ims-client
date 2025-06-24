@@ -58,14 +58,7 @@
         </div>
 
         <DialogFooter>
-          <Button type="submit" :disabled="isSubmitting" @click="() => {
-              toast(toastMsg, {
-                style:{
-                  background: toastStyle
-                } 
-              });
-            }
-          ">
+          <Button type="submit" :disabled="isSubmitting">
             {{ isSubmitting ? "Saving..." : "Save Product" }}
           </Button>
         </DialogFooter>
@@ -131,6 +124,11 @@ const handleAddProduct = async () => {
         quantity: 0,
         category: "",
       };
+      toast(toastMsg, {
+        style:{
+          background: toastStyle.value
+        }
+      });
 
       isDialogOpen.value = false;
 

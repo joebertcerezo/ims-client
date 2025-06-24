@@ -62,14 +62,8 @@
                         Close
                       </Button>
                       <Button type="button" variant="destructive" 
-                      @click="() => {
-                        deleteItem(product.id, product.productName),
-                        toast(toastMsg, {
-                          style:{
-                            background: toastStyle
-                          } 
-                        })
-                        ;}"
+                      @click=
+                      "deleteItem(product.id, product.productName)"
                       >
                         Delete
                       </Button>
@@ -153,6 +147,11 @@ const deleteItem = async (id: string, productName: string) => {
           toastMsg.value = 'Product deleted successfully.'
         }
       }
+      toast(toastMsg, {
+        style:{
+          background: toastStyle.value
+        }
+      })
     } catch (err) {
       console.error(err);
       toastMsg.value = 'Something went wrong. Try again later.'

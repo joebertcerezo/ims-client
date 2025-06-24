@@ -22,6 +22,7 @@
               v-model="productForm.productName"
               type="text"
               placeholder="Enter product name"
+              autocomplete="off"
               required
             />
           </div>
@@ -34,6 +35,7 @@
               type="number"
               placeholder="Enter quantity"
               min="0"
+              max="10000"
               required
             />
           </div>

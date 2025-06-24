@@ -12,7 +12,7 @@
           Make changes to your profile here. Click save when you're done.
         </DialogDescription>
       </DialogHeader>
-      <form @submit="save">
+      <form @submit.prevent="save">
       <div class="grid gap-4 py-4">
         <div class="grid grid-cols-4 items-center gap-2">
           <Label for="firstName" class="text-right">
@@ -34,16 +34,16 @@
         </div>
       </div>
       <DialogFooter>
-        <Button type="submit" @click="() => {
-              toast(toastMsg, {
-                style:{
-                  background: toastStyle
-                } 
-              });
-            }
-          ">
+        <DialogClose>
+          <Button variant="secondary" type="button">
+          Close
+        </Button>
+        </DialogClose>
+        <DialogClose as-child>
+        <Button type="submit">
           Save changes
         </Button>
+        </DialogClose>
       </DialogFooter>
       </form>
     </DialogContent>
@@ -68,7 +68,7 @@ import 'vue-sonner/style.css'
 
 const { public: { apiUrl: API_URL } } = useRuntimeConfig();
 
-const formData = ref<ProfileCreate>({
+let formData = reactive<ProfileCreate>({
   firstName: '',
   middleName: '',
   lastName: ''
@@ -86,7 +86,11 @@ const getProfile = async () => {
 
   try {
     const parsed = ProfileResponseSchema.parse(profiles.value)
-    formData.value = parsed.data!
+    if(parsed.data !== null) {
+      formData.firstName = parsed.data!.firstName
+      formData.middleName = parsed.data!.middleName
+      formData.lastName = parsed.data!.lastName
+    }
   } catch (e) {
     console.error('Failed to parse profile response:', e)
   }
@@ -110,6 +114,13 @@ const save = async() => {
       toastStyle.value = '#73EC8B'
       toastMsg.value = 'Profile saved successfully.'
     }
+    toast(
+      toastMsg, { 
+        style:{
+          background: toastStyle.value
+        } 
+      }
+    );
     
   } catch(e) {
   toastMsg.value = 'Something went wrong. Try again later.'

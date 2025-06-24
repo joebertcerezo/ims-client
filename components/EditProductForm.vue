@@ -33,6 +33,7 @@
               type="number"
               placeholder="Enter quantity"
               min="0"
+              max="10000"
               required
             />
           </div>

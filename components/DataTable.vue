@@ -1,5 +1,5 @@
 <template>
-  <section class="border-2 p-2">
+  <section class="border-t-2 p-2">
     <AddProductForm
       @product-updated="productsDataGet()"
       v-if="currentUser.data?.role === 'admin'"
@@ -144,7 +144,7 @@ const deleteItem = async (id: string, productName: string) => {
           );
           if (index !== -1) productsData.value?.data.splice(index!, 1);
           toastStyle.value = '#73EC8B'
-          toastMsg.value = 'Product deleted successfully.'
+          toastMsg.value = `${productName} deleted successfully.`
         }
       }
       toast(toastMsg, {

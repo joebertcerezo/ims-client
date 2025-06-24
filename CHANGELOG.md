@@ -1,122 +1,25 @@
 Release Notes
 
- - 37d8f8e3 removing unnecessary comments
- - a5730801 can now handle error when failed to add a product
- - c1cc68ce Update auth.global.ts
- - 6c3a6c80 Update user.ts
- - dca3adf5 Update user.schema.ts
- - e9119df6 Update product.schema.ts
- - c40e6461 Update README.md
- - aaf575d8 Update dashboard.vue
- - a6affd82 Update nuxt.config.ts
- - 6057c79b Update auth.global.ts
- - 68f173b7 Update SignupForm.vue
- - 0dc3b0f0 Update SigninForm.vue
- - f1e54663 Create RenewAccessToken.vue
- - ea7d869f Update EditProductForm.vue
- - 52cee43f Update DataTable.vue
- - ffe7e909 Update AddProductForm.vue
- - eefcefe0 Update .env.example
- - 61956b4e Update user.ts
- - c7bda21d Update dashboard.vue
- - cb57db0d Update nuxt.config.ts
- - 8e793054 Update auth.global.ts
- - 1b1feea1 Update EditProductForm.vue
- - 6ffa0988 Update DataTable.vue
- - 424debcc Update .env.example
- - 7df24923 Update user.ts
- - d5bf0255 Delete auth.ts
- - 82a382ed Create auth.global.ts
- - cb4dd02e Update EditProductForm.vue
- - 8597d31d Update DataTable.vue
- - 80dd88a7 Create user.ts
- - bef14701 Update user.schema.ts
- - ccfa6d24 Update apiResponse.schema.ts
- - 66def6fe Delete signin.vue
- - c040e5c0 Create index.vue
- - 9db568ab Update dashboard.vue
- - 4053f638 Update package.json
- - 096d4cb8 Update package-lock.json
- - 846d636d Update nuxt.config.ts
- - 940164da Create auth.ts
- - 47840db7 Update SignupForm.vue
- - d1c25498 Update SigninForm.vue
- - 75a0ba15 Update EditProductForm.vue
- - b1e1b426 Update DataTable.vue
- - 12d0f03e Update AddProductForm.vue
- - 0c88c9bd Edit Header responsiveness
- - c82a3402 Edit dashboard view
- - ce7a3be7 Add addproductform dialog form
- - 7b91fa88 Add select component
- - bb4c5bb1 Update EditProductForm.vue
- - 96d97403 Update DataTable.vue
- - 8e50c6a3 Create EditProductForm.vue
- - cf69c1e2 Create Dialog.vue
- - c6326e0c Create DialogClose.vue
- - 0269da53 Create DialogContent.vue
- - 8df6cae7 Create DialogDescription.vue
- - 9a68a6f8 Create DialogFooter.vue
- - 6986ea4f Create DialogHeader.vue
- - 8f4e3b0b Create DialogOverlay.vue
- - 42941f7a Create DialogTitle.vue
- - 4aa42b5e Create DialogScrollContent.vue
- - 7d07af44 Create DialogTrigger.vue
- - 7d82d2f9 Create index.ts
- - 1b9017bd Update DataTable.vue
- - aff25e54 Add table from shadcn
- - 736a5df9 Update dashboard.vue
- - 4118144f Add dependencies
- - a50e1922 Create apiResponse.schema.ts
- - 5e52e78a Create category.schema.ts
- - 790dd163 Update user.schema.ts
- - d68da9ce Create product.schema.ts
- - 7ae8be34 Create product.d.ts
- - f58c15f9 Update SignupForm.vue
- - f74bff30 Update SigninForm.vue
- - c89d5654 Create DataTable.vue
- - 11045d66 Edit pages signin signup
- - 66cdc3f1 Create dashboard.vue
- - ffb4d6a8 Update SignupForm.vue
- - 30ad424b Update SigninForm.vue
- - c2812912 Create user.d.ts
- - 52dc3ecb Create user.schema.ts
- - f99fb758 Update package.json
- - a804118c Update package-lock.json
- - 025d87a5 Update nuxt.config.ts
- - 1608fce5 Update SignupForm.vue
- - b8e672e8 Update SigninForm.vue
- - 3fcc2b8b Create .env.example
- - a41a228f Update SigninForm.vue
- - dcd4fc9a Add shadcn vue use core
- - 1c0fd10e Create signup.vue
- - dd7ac5eb Create signin.vue
- - 3ff5eafe Create Label.vue
- - 6add9c55 Create index.ts
- - a6816331 Create Input.vue
- - f0b029bb Create index.ts
- - 539300fd Create index.ts
- - 96ac8050 Create CardTitle.vue
- - 68c456fe Create CardHeader.vue
- - 635673a1 Create CardFooter.vue
- - adb2b9de Create CardDescription.vue
- - 4ca2c756 Create CardContent.vue
- - e663ce76 Create CardAction.vue
- - 1587f0f5 Create Card.vue
- - fe557cf4 Create index.ts
- - a3e46491 Create Button.vue
- - ba98a31e Create SignupForm.vue
- - 0a736c0a Create SigninForm.vue
- - 96f97d15 Update app.vue
- - 1866c67d Add shadcn
- - c87dd144 Create tsconfig.json
- - d94df86b Create tsconfig.json
- - d2f3426d Create robots.txt
- - 7822557b Create favicon.ico
- - fe0ab9f3 Create nuxt.config.ts
- - 735cc503 Create utils.ts
- - a81c4af7 Create components.json
- - cbc9e75b Create main.css
- - 12359b27 Create app.vue
- - ccc50ec4 Update .gitignore
- - 399d43af Add gitignore
- - d95b13b8 Initial commit
+ - 9c511061 Update package-lock.json
+ - a78662ce Update SignupForm.vue
+ - d3596385 Update SigninForm.vue
+ - 6682482a Update EditProductForm.vue
+ - cb923328 Update AddProductForm.vue
+ - 987eb998 removed bottom, left, and right border in table
+ - 096ebe40 fixed toast not redering on the first time trigger
+ - 7d3bcc4b fixed saving and updating profile functionality
+ - 91653e4b Merge pull request #2 from joebertcerezo/feature/profileForm
+ - 485e7c38 changed alert to sonner toast
+ - f0e6c25b Merge pull request #1 from joebertcerezo/feature/profileForm
+ - 43fcb506 script setup moved at the bottom
+ - acef4728 changed Alert to sonner toast in deleting product
+ - 134a3ae3 changed Alert to sonner toast in adding of product
+ - 890a130e changed Alert to sonner toast in profile form
+ - 94281d89 implementation of sonner
+ - 28f094ea schema for response in saving/editing profile
+ - ede784a1 vue-sonner component
+ - aa2d2b90 removed unnecessary comment
+ - 275c2ff1 added profile form for saving and editing
+ - 21f1ea64 Merge tag 'v1.0.0' into develop
+ - 43ffc7a7 Merge branch 'release/v1.0.0'
+ - 3d00f35a Add CHANGELOG.md
